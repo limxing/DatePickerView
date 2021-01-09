@@ -1,0 +1,3 @@
+include ':datepicker'
+include ':app'
+rootProject.name = "DatePickerView"

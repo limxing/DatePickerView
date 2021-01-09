@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="DatePickerView">
+        <attr name="dpvUnitScroll" format="boolean"/>
+        <attr name="dpvUnitTextColor" format="color"/>
+        <attr name="dpvUnitTextSize" format="dimension"/>
+        <attr name="dpvDateTextSize" format="dimension"/>
+        <attr name="dpvDateStar" format="string"/>
+        <attr name="dpvDateEnd" format="string"/>
+        <attr name="dpvDatePosition" format="string"/>
+        <attr name="dpvDateLoop" format="boolean"/>
+        <attr name="dpvDateSize" format="integer"/>
+        <attr name="dpvUnitMarginStart" format="dimension"/>
+        <attr name="dpvLineWidth" format="dimension"/>
+        <attr name="dpvLineColor" format="color"/>
+        <attr name="dpvBackgroundColor" format="color"/>
+        <attr name="dpvDatePaddingStart" format="dimension"/>
+        <attr name="dpvDatePaddingEnd" format="dimension"/>
+    </declare-styleable>
+</resources>
