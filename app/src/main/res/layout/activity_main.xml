@@ -4,38 +4,38 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="#fff"
     tools:context=".MainActivity">
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Hello World!"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
     <top.leefeng.datepicker.DatePickerView
+        android:id="@+id/datePickerView"
         android:layout_width="match_parent"
-        android:layout_height="250dp"
-        app:dpvBackgroundColor="#11dd22"
-        app:dpvDateEnd="2021-01-09"
-        app:dpvDateLoop="true"
+        android:layout_height="300dp"
+        app:dpvBackgroundColor="#ffffff"
+        app:dpvDateEnd="2021-05-05"
         app:dpvDatePaddingEnd="75dp"
         app:dpvDatePaddingStart="75dp"
-        app:dpvDatePosition="2021-01-09"
-        app:dpvDateSize="5"
-        app:dpvDateStar="1990-03-03"
-        app:dpvDateTextSize="22dp"
-        app:dpvLineColor="@color/black"
+        app:dpvDatePosition="2021-02-03"
+        app:dpvDateSize="7"
+        app:dpvDateStar="1995-01-02"
+        app:dpvDateTextSize="24dp"
+        app:dpvLineColor="#33000000"
         app:dpvLineWidth="1dp"
         app:dpvUnitMarginStart="10dp"
         app:dpvUnitScroll="true"
         app:dpvUnitTextColor="@color/black"
-        app:dpvUnitTextSize="18dp"
+        app:dpvUnitTextSize="20dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/simplePicker" />
+
+    <top.leefeng.datepicker.SimplePickerView
+        android:id="@+id/simplePicker"
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
+        app:layout_constraintBottom_toTopOf="@+id/datePickerView"
+        app:layout_constraintTop_toTopOf="parent" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

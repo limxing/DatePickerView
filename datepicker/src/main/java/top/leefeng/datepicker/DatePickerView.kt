@@ -6,7 +6,6 @@ import android.util.AttributeSet
 import android.util.TypedValue
 import android.view.Gravity
 import android.view.MotionEvent
-import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.core.view.children
@@ -20,11 +19,14 @@ import java.util.*
 
 /**
  * 日期选择器
- * lilifeng@tongxue-inc.com
+ * Mail:    lilifeng@tongxue-inc.com
+ * Blog:    https://leefeng.top
+ * Develop Date：2020-01-10
  */
 class DatePickerView @JvmOverloads constructor(
     context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
 ) : ViewGroup(context, attrs, defStyleAttr) {
+    private var positionDate: List<String>
     private var datePaddingEnd: Int
     private var datePaddingStart: Int
     private var backColor: Int
@@ -42,15 +44,12 @@ class DatePickerView @JvmOverloads constructor(
     private val sdf = SimpleDateFormat("yyy-MM-dd", Locale.CHINA)
     private var isScrolling = false
 
-    private val listenet = object : RecyclerView.OnScrollListener() {
+    private val listener = object : RecyclerView.OnScrollListener() {
         private var lastTag: Any = 0
         private var lastValue = ""
         override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
-//            if (newState == SCROLL_STATE_DRAGGING) isScrolling = true
-//            else if (newState == SCROLL_STATE_IDLE) isScrolling = false
             if (newState == SCROLL_STATE_IDLE) {
                 val value = getCurrentText(recyclerView)
-                println("lefeng onScrollStateChanged  ${lastTag == recyclerView.tag} ==$lastValue $value  ${lastValue == value}")
                 if (recyclerView.tag == lastTag && lastValue == value) return
                 lastTag = recyclerView.tag
                 lastValue = value
@@ -61,9 +60,7 @@ class DatePickerView @JvmOverloads constructor(
                     listOf(getCurrentText(yearR), getCurrentText(monR), getCurrentText(dayR))
                 when (recyclerView.tag) {
                     0 -> {
-                        caculateMonth(monR.adapter as DateAdapter, posDate){
-                            monR.dpvUpdate()
-                        }
+                        caculateMonth(monR.adapter as DateAdapter, posDate)
                         monR.post {
                             caculateDay(
                                 dayR.adapter as DateAdapter,
@@ -72,16 +69,12 @@ class DatePickerView @JvmOverloads constructor(
                                     getCurrentText(monR),
                                     getCurrentText(dayR)
                                 )
-                            ){
-                                dayR.dpvUpdate()
-                            }
+                            )
                         }
                     }
                     1 -> {
                         monR.post {
-                            caculateDay(dayR.adapter as DateAdapter, posDate){
-                                dayR.dpvUpdate()
-                            }
+                            caculateDay(dayR.adapter as DateAdapter, posDate)
                         }
                     }
                 }
@@ -102,7 +95,7 @@ class DatePickerView @JvmOverloads constructor(
     }
 
     private val paint = Paint()
-    private val rectf = RectF()
+    private val rectF = RectF()
 
     init {
         setWillNotDraw(false)
@@ -117,7 +110,6 @@ class DatePickerView @JvmOverloads constructor(
             R.styleable.DatePickerView_dpvUnitTextSize,
             18 * resources.displayMetrics.density
         )
-        val dateLoop = it.getBoolean(R.styleable.DatePickerView_dpvDateLoop, false)
         val dateStar = it.getString(R.styleable.DatePickerView_dpvDateStar) ?: "1970-01-01"
         val dateEnd = it.getString(R.styleable.DatePickerView_dpvDateEnd) ?: sdf.format(Date())
         val datePosition = it.getString(R.styleable.DatePickerView_dpvDatePosition) ?: dateEnd
@@ -129,6 +121,7 @@ class DatePickerView @JvmOverloads constructor(
             throw Throwable("dateStar or dateEnd format error please check for yyyy-MM-dd")
         }
         dateShowSize = it.getInt(R.styleable.DatePickerView_dpvDateSize, 5)
+        if (dateShowSize % 2 == 0 || dateShowSize < 3) throw Throwable("dpvDateSize value must be  odd number and must be bigger than 2")
         unitMarginStart = it.getDimension(
             R.styleable.DatePickerView_dpvUnitMarginStart,
             resources.displayMetrics.density * 2
@@ -145,40 +138,16 @@ class DatePickerView @JvmOverloads constructor(
         datePaddingEnd = it.getDimension(R.styleable.DatePickerView_dpvDatePaddingEnd, 0f).toInt()
         it.recycle()
         starDate = dateStar.split("-")
-        val positionDate = datePosition.split("-")
+        positionDate = datePosition.split("-")
         endDate = dateEnd.split("-")
 
         repeat(3) {
-            addView(RecyclerView(context).apply {
-//                    adapter =
-                addItemDecoration(object:ItemDecoration(){
-                    override fun getItemOffsets(
-                        outRect: Rect,
-                        view: View,
-                        parent: RecyclerView,
-                        state: State
-                    ) {
-
-                    }
-
-                })
-                layoutManager = object : LinearLayoutManager(context) {
-                    override fun scrollVerticallyBy(
-                        dy: Int,
-                        recycler: Recycler?,
-                        state: State?
-                    ): Int {
-                        dpvUpdate()
-
-                        return super.scrollVerticallyBy(dy, recycler, state)
-                    }
-
-
-                }
+            addView(PickerView(context).apply {
+                layoutManager = LinearLayoutManager(context)
                 tag = it
                 overScrollMode = OVER_SCROLL_NEVER
                 LinearSnapHelper().attachToRecyclerView(this)
-                addOnScrollListener(listenet)
+                addOnScrollListener(listener)
             })
             if (!unitScroll)
                 addView(TextView(context).apply {
@@ -194,34 +163,10 @@ class DatePickerView @JvmOverloads constructor(
                         cellHeight,
                         if (unitScroll) units[index] else "",
                         dateShowSize,
-                        index,
                         textSize,
                         textColor
                     )
-                    scrollToPosition(
-                        when (index) {
-                            0 -> {
-                                (adapter as DateAdapter).setData(
-                                    starDate[0].toInt(),
-                                    endDate[0].toInt()
-                                )
-                                positionDate[0].toInt() - starDate[0].toInt()
-                            }
-                            1 -> {
-                                positionDate[1].toInt() - caculateMonth(
-                                    adapter as DateAdapter,
-                                    positionDate
-                                )
-                            }
-                            else -> {
-                                positionDate[2].toInt() - caculateDay(
-                                    adapter as DateAdapter,
-                                    positionDate
-                                )
-                            }
-                        } //+ dateShowSize / 2
-                    )
-                    dpvUpdate()
+                    scrollToPosition(this)
                 }
             }
         }
@@ -231,71 +176,105 @@ class DatePickerView @JvmOverloads constructor(
 
     }
 
-    private fun RecyclerView.dpvUpdate() {
-        post {
-            for (i in 0 until childCount) {
-                val cellH = sizeHeight / dateShowSize / 2f
-                getChildAt(i)?.let {
-                    var scale = (it.top + cellH) / sizeHeight + 0.5f
-                    if (scale > 1f) scale -= 2f
-                    if (scale < 0f) scale = -scale
-                    it.scaleX = scale
-                    it.scaleY = scale
-                    it.alpha = scale
+    private fun scrollToPosition(recyclerView: RecyclerView) {
+        val adapter = recyclerView.adapter as DateAdapter
+        recyclerView.scrollToPosition(
+            when (recyclerView.tag) {
+                0 -> {
+                    adapter.setData(
+                        starDate[0].toInt(),
+                        endDate[0].toInt()
+                    )
+                    positionDate[0].toInt() - starDate[0].toInt()
+                }
+                1 -> {
+                    positionDate[1].toInt() - caculateMonth(
+                        adapter,
+                        positionDate
+                    )
+                }
+                else -> {
+                    positionDate[2].toInt() - caculateDay(
+                        adapter,
+                        positionDate
+                    )
                 }
             }
+        )
 
-        }
     }
 
-    private fun caculateDay(adapter: DateAdapter, positionDate: List<String>,dataUpdate:(()->Unit)?=null): Int {
+    /**
+     * 计算日
+     */
+    private fun caculateDay(adapter: DateAdapter, positionDate: List<String>): Int {
         val year = positionDate[0]
         val month = positionDate[1]
+        val day = positionDate[2]
         val days = when (month) {
             "02" -> if (year.toInt() % 4 == 0) 29 else 28
             "04", "06", "09", "11" -> 30
             else -> 31
         }
-        return if (starDate[0] == year && starDate[1] == month) {
-            //当前等于开始年
-            if(adapter.setData(starDate[2].toInt(), days)){
-                dataUpdate?.invoke()
-            }
+        return if (starDate[0] == year) {
+            adapter.setData(starDate[2].toInt(), days)
             starDate[2].toInt()
-        } else if (endDate[0] == year && endDate[1] == month) {
-            if (adapter.setData(1, endDate[2].toInt())){
-                dataUpdate?.invoke()
-            }
+        } else if (endDate[0] == year) {
+            adapter.setData(1, endDate[2].toInt())
             1
         } else {
-            if(adapter.setData(1, days)){
-                dataUpdate?.invoke()
-            }
+            adapter.setData(1, days)
             1
         }
 
     }
 
     /**
-     * 计算应该设置月份
+     * 计算月份
      */
-    private fun caculateMonth(adapter: DateAdapter, positionDate: List<String>,dataUpdate:(()->Unit)?=null): Int {
+    private fun caculateMonth(adapter: DateAdapter, positionDate: List<String>): Int {
+
+
         return if (positionDate[0] == starDate[0]) {
-            //与开始年一致，月份的开始跟开始年一致
-            if(adapter.setData(starDate[1].toInt(), 12)){
-                dataUpdate?.invoke()
-            }
+            adapter.setData(starDate[1].toInt(), 12)
             starDate[1].toInt()
         } else if (positionDate[0] == endDate[0]) {
-            if(adapter.setData(1, endDate[1].toInt())){
-                dataUpdate?.invoke()
-            }
+            adapter.setData(1, endDate[1].toInt())
             1
         } else {
-            if(adapter.setData(1, 12)){
-                dataUpdate?.invoke()
-            }
+            adapter.setData(1, 12)
             1
+        }
+    }
+
+    /**
+     * set end date
+     *  format yyyy-MM-dd
+     *  dateStart   开始日期
+     *  dateEnd     结束日期
+     *  datePosition定位日期
+     */
+    fun setDate(dateStart: String, dateEnd: String, datePosition: String) {
+        post {
+            val startArray = dateStart.split("-")
+            if (startArray.size != 3) throw Throwable("dateStart format mast be yyyy-MM-dd")
+            val endArray = dateEnd.split("-")
+            if (endArray.size != 3) throw Throwable("dateEnd format mast be yyyy-MM-dd")
+            val posArray = datePosition.split("-")
+            if (posArray.size != 3) throw Throwable("datePosition format mast be yyyy-MM-dd")
+
+            val startTime = sdf.parse(dateStart)!!.time
+            val endTime = sdf.parse(dateEnd)!!.time
+            val posTime = sdf.parse(datePosition)!!.time
+            if (endTime < startTime) throw Throwable("dateEnd mast bu bigger than dateStart")
+            if (posTime < startTime || posTime > endTime) throw Throwable("datePosition must between dateStart and dateEnd")
+
+            endDate = endArray
+            starDate = startArray
+            positionDate = posArray
+            children.filter { it is RecyclerView }.forEach {
+                scrollToPosition(it as RecyclerView)
+            }
         }
     }
 
@@ -337,7 +316,7 @@ class DatePickerView @JvmOverloads constructor(
     }
 
     override fun onDraw(canvas: Canvas?) {
-        rectf.set(
+        rectF.set(
             0f,
             (sizeHeight - cellHeight) / 2f,
             sizeWidth / 1f,
@@ -345,14 +324,14 @@ class DatePickerView @JvmOverloads constructor(
         )
         paint.color = backColor
         paint.style = Paint.Style.FILL
-        canvas?.drawRect(rectf, paint)
+        canvas?.drawRect(rectF, paint)
 
         paint.color = lineColor
         paint.style = Paint.Style.STROKE
 
 
-        canvas?.drawLine(rectf.left, rectf.top, rectf.right, rectf.top, paint)
-        canvas?.drawLine(rectf.left, rectf.bottom, rectf.right, rectf.bottom, paint)
+        canvas?.drawLine(rectF.left, rectF.top, rectF.right, rectF.top, paint)
+        canvas?.drawLine(rectF.left, rectF.bottom, rectF.right, rectF.bottom, paint)
         super.onDraw(canvas)
     }
 
@@ -363,15 +342,14 @@ class DatePickerView @JvmOverloads constructor(
         val cellHeight: Int,
         val unit: String = "",
         val dateShowSize: Int,
-        val type: Int,
         val txtsize: Float,
         val textcolor: Int
     ) :
-        RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+        RecyclerView.Adapter<ViewHolder>() {
 
         private var fromNum = 0
         private var endNum = -1
-        override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
+        override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
             return object : RecyclerView.ViewHolder(TextView(parent.context).apply {
                 layoutParams =
                     LayoutParams(LayoutParams.MATCH_PARENT, cellHeight)
@@ -385,7 +363,7 @@ class DatePickerView @JvmOverloads constructor(
             (holder.itemView as TextView).text = when (position) {
                 in (0 until dateShowSize / 2) -> ""
                 in itemCount - dateShowSize / 2 until itemCount -> ""
-                else -> "${fromNum + position - 2}$unit"
+                else -> "${fromNum + position - dateShowSize / 2}$unit"
             }
 
         }
@@ -395,7 +373,8 @@ class DatePickerView @JvmOverloads constructor(
         }
 
 
-        fun setData(from: Int, end: Int):Boolean {
+        fun setData(from: Int, end: Int): Boolean {
+
             if (from == fromNum && end == endNum) {
                 return false
             }

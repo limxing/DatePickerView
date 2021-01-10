@@ -1,20 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <declare-styleable name="DatePickerView">
-        <attr name="dpvUnitScroll" format="boolean"/>
-        <attr name="dpvUnitTextColor" format="color"/>
-        <attr name="dpvUnitTextSize" format="dimension"/>
-        <attr name="dpvDateTextSize" format="dimension"/>
-        <attr name="dpvDateStar" format="string"/>
-        <attr name="dpvDateEnd" format="string"/>
-        <attr name="dpvDatePosition" format="string"/>
-        <attr name="dpvDateLoop" format="boolean"/>
-        <attr name="dpvDateSize" format="integer"/>
-        <attr name="dpvUnitMarginStart" format="dimension"/>
-        <attr name="dpvLineWidth" format="dimension"/>
-        <attr name="dpvLineColor" format="color"/>
-        <attr name="dpvBackgroundColor" format="color"/>
-        <attr name="dpvDatePaddingStart" format="dimension"/>
-        <attr name="dpvDatePaddingEnd" format="dimension"/>
+        <attr name="dpvUnitScroll" format="boolean" />
+        <attr name="dpvUnitTextColor" format="color" />
+        <attr name="dpvUnitTextSize" format="dimension" />
+        <attr name="dpvDateTextSize" format="dimension" />
+        <attr name="dpvDateStar" format="string" />
+        <attr name="dpvDateEnd" format="string" />
+        <attr name="dpvDatePosition" format="string" />
+        <attr name="dpvDateSize" format="integer" />
+        <attr name="dpvUnitMarginStart" format="dimension" />
+        <attr name="dpvLineWidth" format="dimension" />
+        <attr name="dpvLineColor" format="color" />
+        <attr name="dpvBackgroundColor" format="color" />
+        <attr name="dpvDatePaddingStart" format="dimension" />
+        <attr name="dpvDatePaddingEnd" format="dimension" />
+    </declare-styleable>
+    <declare-styleable name="SimplePickerView">
+        <attr name="spvShowSize" format="integer" />
+        <attr name="spvTextSize" format="dimension" />
+        <attr name="spvTextColor" format="color" />
     </declare-styleable>
 </resources>
