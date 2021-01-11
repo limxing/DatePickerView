@@ -30,12 +30,30 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/simplePicker" />
 
+    <TextView
+        android:id="@+id/dateResult"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="@id/datePickerView"
+        app:layout_constraintStart_toStartOf="@id/datePickerView"
+        app:layout_constraintTop_toTopOf="@id/datePickerView" />
+
     <top.leefeng.datepicker.SimplePickerView
         android:id="@+id/simplePicker"
         android:layout_width="match_parent"
-        android:layout_height="200dp"
+        android:layout_height="300dp"
         app:layout_constraintBottom_toTopOf="@+id/datePickerView"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:spvLineColor="#33000000"
+        app:spvLineWidth="1dp" />
+
+    <TextView
+        android:id="@+id/simpleResult"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="@id/simplePicker"
+        app:layout_constraintStart_toStartOf="@id/simplePicker"
+        app:layout_constraintTop_toTopOf="@id/simplePicker" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

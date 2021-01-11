@@ -3,7 +3,11 @@ package top.leefeng.datepicker
 import android.content.Context
 import android.graphics.Canvas
 import android.util.AttributeSet
+import android.view.ViewGroup
+import android.widget.TextView
 import androidx.core.view.children
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.LinearSnapHelper
 import androidx.recyclerview.widget.RecyclerView
 import kotlin.math.pow
 
@@ -16,6 +20,11 @@ import kotlin.math.pow
 open class PickerView @JvmOverloads constructor(
     context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
 ) : RecyclerView(context, attrs, defStyleAttr) {
+    init {
+        layoutManager = LinearLayoutManager(context)
+        overScrollMode = ViewGroup.OVER_SCROLL_NEVER
+        LinearSnapHelper().attachToRecyclerView(this)
+    }
 
     override fun dispatchDraw(canvas: Canvas?) {
         children.forEach {
@@ -33,11 +42,17 @@ open class PickerView @JvmOverloads constructor(
             if (degree < 90) {
                 val s = degree.toInt() / 90f
                 it.translationY = (if (revert) -(s.pow(2.0f)) else (s).pow(2.0f)) * it.height
+
             } else {
                 it.translationY = if (revert) it.height / 1f else -it.height / 1f
             }
             drawChild(canvas, it, drawingTime)
-
         }
+    }
+
+
+    interface DrawListener {
+        fun drawBelow(canvas: Canvas?, width: Int, height: Int, cellHeight: Int)
+        fun drawOver(canvas: Canvas?, width: Int, height: Int, cellHeight: Int)
     }
 }
