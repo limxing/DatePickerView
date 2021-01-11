@@ -1,5 +1,6 @@
 # Android 日期选择器 滚轮样式的选择器
-DatePickerView
+DatePickerView [![](https://jitpack.io/v/limxing/DatePickerView.svg)](https://jitpack.io/#limxing/DatePickerView)
+
 
 <img src="./screen_record_date.gif" width="419" height="387"/>
 
@@ -22,7 +23,7 @@ allprojects {
 App level build.gradle
 ```
 dependencies {
-    
+    implementation 'com.github.limxing:DatePickerView:1.0.0'
 }
 ```
 
@@ -156,7 +157,7 @@ java
 ```
 #### 4、DatePickerView的实现
 
-DatePickerView集成于ViewGroup，是一个常规的自定义View，有兴趣可以参考 [源码]("https://github.com/limxing/DatePickerView/blob/master/datepicker/src/main/java/top/leefeng/datepicker/DatePickerView.kt") 。。
+DatePickerView继承自ViewGroup，是一个常规的自定义View，有兴趣可以参考 [源码](https://github.com/limxing/DatePickerView/blob/master/datepicker/src/main/java/top/leefeng/datepicker/DatePickerView.kt) 。
 
 本项目还提供了一个通用选择器：SimplePickerView,使用如上所述。
 当然你还可以使用PickerView进行其他选择器的开发，例如时间选择器、省市联动选择器。
