@@ -112,7 +112,7 @@ java
 <img src="./design_hands.jpeg" width="600" height="338"/>
 
 #### 1、UI效果：
-- 角度：滚轮效果上来看就是一个半圆，从正面看，选中的条目x轴方向角度是0，其上方的条目x轴角度的方向应该是0~90，其下方的角度应该是0~-90
+- 角度：滚轮效果上来看就是一个半圆，从正面看，选中的条目x轴方向角度是0，其上方的条目x轴角度的方向应该是0 至 90°，其下方的角度应该是0 至 -90°
 - 大小：选中的条目大小与设置的一致，从中间至上下逐渐变小
 - 位置：当Item进行角度和大小的变换后，越远离选中条目的条目之间的距离越大，因此，我们要对item设置y轴的位移，
 
@@ -163,5 +163,5 @@ DatePickerView集成于ViewGroup，是一个常规的自定义View，有兴趣�
 
 最后，如遇到bug请及时issue。希望能够对你有帮助。
 
-#### License
+## License
 DatePickerView and PickerView is available under the MIT license.
