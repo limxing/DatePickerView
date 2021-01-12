@@ -1,7 +1,12 @@
 package top.leefeng.datepicker
 
 import android.content.Context
-import android.graphics.*
+import android.graphics.Canvas
+import android.graphics.Color
+import android.graphics.Paint
+import android.graphics.RectF
+import android.text.Layout
+import android.text.TextPaint
 import android.util.AttributeSet
 import android.util.TypedValue
 import android.view.Gravity
@@ -11,9 +16,9 @@ import android.widget.TextView
 import androidx.core.view.children
 import androidx.core.view.get
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.LinearSnapHelper
 import androidx.recyclerview.widget.RecyclerView
-import androidx.recyclerview.widget.RecyclerView.*
+import androidx.recyclerview.widget.RecyclerView.SCROLL_STATE_IDLE
+import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -102,14 +107,16 @@ class DatePickerView @JvmOverloads constructor(
     }
 
 
-    private val paint = Paint()
+    private val paint = Paint(Paint.ANTI_ALIAS_FLAG)
     private val rectF = RectF()
 
     init {
         setWillNotDraw(false)
         val it = context.obtainStyledAttributes(attrs, R.styleable.DatePickerView)
         unitScroll = it.getBoolean(R.styleable.DatePickerView_dpvUnitScroll, false)
-        val textColor = it.getColor(R.styleable.DatePickerView_dpvUnitTextColor, Color.BLACK)
+        val textColor = it.getColor(R.styleable.DatePickerView_dpvDateTextColor, Color.BLACK)
+        val textSideColor = it.getColor(R.styleable.DatePickerView_dpvDateTextSideColor, textColor)
+        val textUnitColor = it.getColor(R.styleable.DatePickerView_dpvUnitTextColor, textColor)
         val textSize = it.getDimension(
             R.styleable.DatePickerView_dpvDateTextSize,
             20 * resources.displayMetrics.density
@@ -144,6 +151,7 @@ class DatePickerView @JvmOverloads constructor(
         datePaddingStart =
             it.getDimension(R.styleable.DatePickerView_dpvDatePaddingStart, 0f).toInt()
         datePaddingEnd = it.getDimension(R.styleable.DatePickerView_dpvDatePaddingEnd, 0f).toInt()
+        val isEnableAlpha = it.getBoolean(R.styleable.DatePickerView_dpvDateEnableAlpha,true)
         it.recycle()
         starDate = dateStar.split("-")
         positionDate = datePosition.split("-")
@@ -155,11 +163,12 @@ class DatePickerView @JvmOverloads constructor(
             addView(PickerView(context).apply {
                 tag = it
                 addOnScrollListener(scroolListener)
+                enableAlpha = isEnableAlpha
             })
             if (!unitScroll)
                 addView(TextView(context).apply {
                     text = units[it]
-                    setTextColor(textColor)
+                    setTextColor(textUnitColor)
                     setTextSize(TypedValue.COMPLEX_UNIT_PX, unitTextSize)
                 })
         }
@@ -171,16 +180,14 @@ class DatePickerView @JvmOverloads constructor(
                         if (unitScroll) units[index] else "",
                         dateShowSize,
                         textSize,
-                        textColor
+                        textColor,
+                        textSideColor
                     )
                     scrollToPosition(this)
                 }
             }
             listener?.invoke(result)
         }
-
-        paint.isAntiAlias = true
-
 
     }
 
@@ -209,9 +216,9 @@ class DatePickerView @JvmOverloads constructor(
                 }
             }
         )
-        recyclerView.post {
+        recyclerView.postDelayed({
             result[recyclerView.tag as Int] = getCurrentText(recyclerView).toInt()
-        }
+        }, 500)
 
     }
 
@@ -323,7 +330,7 @@ class DatePickerView @JvmOverloads constructor(
         }).toInt()
     }
 
-//    val colorFilter = LightingColorFilter(0xffffff, 0x0000f0)
+    //    val colorFilter = LightingColorFilter(0xffffff, 0x0000f0)
 //    var lg: LinearGradient? = null
 //    val color = Color.parseColor("#112233")
     override fun onDraw(canvas: Canvas?) {
@@ -335,7 +342,6 @@ class DatePickerView @JvmOverloads constructor(
             (sizeHeight + cellHeight) / 2f
         )
         paint.reset()
-        paint.isAntiAlias = true
         paint.strokeWidth = lineStrokeWidth
         paint.color = backColor
         paint.style = Paint.Style.FILL
@@ -366,20 +372,24 @@ class DatePickerView @JvmOverloads constructor(
         val unit: String = "",
         val dateShowSize: Int,
         val txtsize: Float,
-        val textcolor: Int
+        val textcolor: Int,
+        val textselectColor: Int
     ) :
         RecyclerView.Adapter<ViewHolder>() {
 
         private var fromNum = 0
         private var endNum = -1
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-            return object : RecyclerView.ViewHolder(TextView(parent.context).apply {
+            return object : RecyclerView.ViewHolder(PickerTextView(parent.context).apply {
                 layoutParams =
                     LayoutParams(LayoutParams.MATCH_PARENT, cellHeight)
                 gravity = Gravity.CENTER// or Gravity.END
                 setTextSize(TypedValue.COMPLEX_UNIT_PX, txtsize)
-                setTextColor(textcolor)
-            }) {}
+                pTextSelectColor = textcolor
+                pTextColor = textselectColor
+            }) {
+
+            }
         }
 
         override fun onBindViewHolder(holder: ViewHolder, position: Int) {

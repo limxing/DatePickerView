@@ -45,13 +45,16 @@ app:dpvDatePaddingStart="75dp"          左边距，默认0
 app:dpvDatePosition="2021-02-03"        定位日期，默认截止日期
 app:dpvDateSize="7"                     当前课件范围内显示日期的个数，默认5          
 app:dpvDateStar="1995-01-02"            开始日期，默认 1970-01-01
+app:dpvDateTextColor="@color/black"     设置选中日期文本颜色，默认Color.BLACK
+app:dpvDateTextSideColor="@color/black" 设置未选中日期两侧文本颜色，默认与dpvDateTextColor一致
 app:dpvDateTextSize="24dp"              日期文字大小，默认 20dp
 app:dpvLineColor="#33000000"            选中（中间条目）上下边界线颜色，默认透明
 app:dpvLineWidth="1dp"                  选中（中间条目）上下边界线宽度，默认1dp
 app:dpvUnitMarginStart="10dp"           如果年月日单位固定不滚动，设置单位与数字之间的距离，默认0
 app:dpvUnitScroll="true"                是否设置单位（年月日）与数字一起滚动，默认false
-app:dpvUnitTextColor="@color/black"     设置单位（年月日）文本颜色，默认 黑色
+app:dpvUnitTextColor="@color/black"     设置单位（年月日）及选中的日期文本颜色，默认与dpvDateTextColor一致
 app:dpvUnitTextSize="20dp"              设置单位（年月日）文本大小，默认 18dp
+app:dpvDateEnableAlpha="true"           是否透明度向两侧渐变，默认true
 ```
 
 
@@ -141,7 +144,7 @@ java
         it.alpha = 0.3f + f * 0.7f
         //4、计算旋转角度
         val degree = 90 - f * 90
-        it.rotationX = degree
+        it.rotationX = if (revert) -degree else degree
         //5、计算位移距离
         if (degree < 90) {
             val s = degree.toInt() / 90f
@@ -150,7 +153,7 @@ java
         } else {
             it.translationY = if (revert) it.height / 1f else -it.height / 1f
         }
-        //6、绘制此view
+        //6、绘制此view，文本在分割线变化可参考源代码
         drawChild(canvas, it, drawingTime)
     }
 }

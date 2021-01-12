@@ -1,7 +1,7 @@
 package top.leefeng.datepicker
 
 import android.content.Context
-import android.graphics.Canvas
+import android.graphics.*
 import android.util.AttributeSet
 import android.view.ViewGroup
 import android.widget.TextView
@@ -26,6 +26,7 @@ open class PickerView @JvmOverloads constructor(
         LinearSnapHelper().attachToRecyclerView(this)
     }
 
+    var enableAlpha = true
     override fun dispatchDraw(canvas: Canvas?) {
         children.forEach {
             val cellCenter = (it.top + it.bottom) / 2f
@@ -36,17 +37,34 @@ open class PickerView @JvmOverloads constructor(
             if (scale.isNaN()) return
             it.scaleX = scale
             it.scaleY = scale
-            it.alpha = 0.3f + f * 0.7f
+            if (enableAlpha)
+                it.alpha = 0.3f + f * 0.7f
             val degree = 90 - f * 90
-            it.rotationX = degree
+            it.rotation
+            it.rotationX = if (revert) -degree else degree
             if (degree < 90) {
                 val s = degree.toInt() / 90f
-                it.translationY = (if (revert) -(s.pow(2.0f)) else (s).pow(2.0f)) * it.height
+                it.translationY = (if (revert) -(s.pow(3.0f)) else (s).pow(3.0f)) * it.height
 
             } else {
                 it.translationY = if (revert) it.height / 1f else -it.height / 1f
             }
+            (it as? PickerTextView)?.let {
+                val currentTop = (measuredHeight - it.height) / 2 - resources.displayMetrics.density
+                val currentBottom = currentTop + it.height + 2 * resources.displayMetrics.density
+                if (it.top < currentTop && it.bottom > currentTop) {
+                    it.setPosition(true, currentTop - it.top, true)
+                } else if (it.top < currentBottom && it.bottom > currentBottom) {
+                    it.setPosition(false, currentBottom - it.top, true)
+
+                } else if (it.bottom < currentTop || it.top > currentBottom) {
+                    it.setPosition(true, 0f, false)
+                } else {
+                    it.setPosition(false, 0f, false)
+                }
+            }
             drawChild(canvas, it, drawingTime)
+
         }
     }
 

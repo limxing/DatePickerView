@@ -3,6 +3,8 @@
     <declare-styleable name="DatePickerView">
         <attr name="dpvUnitScroll" format="boolean" />
         <attr name="dpvUnitTextColor" format="color" />
+        <attr name="dpvDateTextColor" format="color" />
+        <attr name="dpvDateTextSideColor" format="color" />
         <attr name="dpvUnitTextSize" format="dimension" />
         <attr name="dpvDateTextSize" format="dimension" />
         <attr name="dpvDateStar" format="string" />
@@ -15,6 +17,7 @@
         <attr name="dpvBackgroundColor" format="color" />
         <attr name="dpvDatePaddingStart" format="dimension" />
         <attr name="dpvDatePaddingEnd" format="dimension" />
+        <attr name="dpvDateEnableAlpha" format="boolean" />
     </declare-styleable>
 
     <declare-styleable name="SimplePickerView">
