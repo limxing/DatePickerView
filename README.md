@@ -23,7 +23,7 @@ allprojects {
 App level build.gradle
 ```
 dependencies {
-    implementation 'com.github.limxing:DatePickerView:1.0.0'
+    implementation 'com.github.limxing:DatePickerView:1.0.1'
 }
 ```
 
@@ -148,7 +148,7 @@ java
         //5、计算位移距离
         if (degree < 90) {
             val s = degree.toInt() / 90f
-            it.translationY = (if (revert) -(s.pow(2.0f)) else (s).pow(2.0f)) * it.height
+            it.translationY = (if (revert) -(s.pow(3.0f)) else (s).pow(3.0f)) * it.height
 
         } else {
             it.translationY = if (revert) it.height / 1f else -it.height / 1f
