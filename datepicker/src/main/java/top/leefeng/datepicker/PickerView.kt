@@ -45,11 +45,11 @@ open class PickerView @JvmOverloads constructor(
             if (degree < 90) {
                 val s = degree.toInt() / 90f
                 it.translationY = (if (revert) -(s.pow(3.0f)) else (s).pow(3.0f)) * it.height
-
             } else {
                 it.translationY = if (revert) it.height / 1f else -it.height / 1f
             }
             (it as? PickerTextView)?.let {
+                if (it.pTextColor == it.pTextSelectColor) return@let
                 val currentTop = (measuredHeight - it.height) / 2 - resources.displayMetrics.density
                 val currentBottom = currentTop + it.height + 2 * resources.displayMetrics.density
                 if (it.top < currentTop && it.bottom > currentTop) {
@@ -64,7 +64,6 @@ open class PickerView @JvmOverloads constructor(
                 }
             }
             drawChild(canvas, it, drawingTime)
-
         }
     }
 
