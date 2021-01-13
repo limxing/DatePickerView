@@ -8,11 +8,10 @@ import android.util.AttributeSet
 import android.widget.TextView
 
 /**
- *
- * Created by lilifeng on 1/12/21
- *
- * Copyright www.putaoabc.com
- *
+ * 选择器 可变色TextView
+ * Mail:    lilifeng@tongxue-inc.com
+ * Blog:    https://leefeng.top
+ * Develop Date：2020-01-10
  */
 class PickerTextView @JvmOverloads constructor(
     context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0

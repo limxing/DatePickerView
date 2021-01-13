@@ -13,6 +13,12 @@ import android.widget.TextView
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 
+/**
+ * 选择器
+ * Mail:    lilifeng@tongxue-inc.com
+ * Blog:    https://leefeng.top
+ * Develop Date：2020-01-10
+ */
 class SimplePickerView @JvmOverloads constructor(
     context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
 ) : PickerView(context, attrs, defStyleAttr) {

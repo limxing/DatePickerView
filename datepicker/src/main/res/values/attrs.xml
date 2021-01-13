@@ -7,7 +7,7 @@
         <attr name="dpvDateTextSideColor" format="color" />
         <attr name="dpvUnitTextSize" format="dimension" />
         <attr name="dpvDateTextSize" format="dimension" />
-        <attr name="dpvDateStar" format="string" />
+        <attr name="dpvDateStart" format="string" />
         <attr name="dpvDateEnd" format="string" />
         <attr name="dpvDatePosition" format="string" />
         <attr name="dpvDateSize" format="integer" />

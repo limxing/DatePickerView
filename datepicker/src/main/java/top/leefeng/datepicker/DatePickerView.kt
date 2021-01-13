@@ -5,8 +5,6 @@ import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Paint
 import android.graphics.RectF
-import android.text.Layout
-import android.text.TextPaint
 import android.util.AttributeSet
 import android.util.TypedValue
 import android.view.Gravity
@@ -125,15 +123,15 @@ class DatePickerView @JvmOverloads constructor(
             R.styleable.DatePickerView_dpvUnitTextSize,
             18 * resources.displayMetrics.density
         )
-        val dateStar = it.getString(R.styleable.DatePickerView_dpvDateStar) ?: "1970-01-01"
+        val dateStart = it.getString(R.styleable.DatePickerView_dpvDateStart) ?: "1970-01-01"
         val dateEnd = it.getString(R.styleable.DatePickerView_dpvDateEnd) ?: sdf.format(Date())
         val datePosition = it.getString(R.styleable.DatePickerView_dpvDatePosition) ?: dateEnd
         try {
-            if (sdf.parse(dateStar)!!.time > sdf.parse(dateEnd)!!.time) {
-                throw Throwable("dateStar can not bigger than dateEnd")
+            if (sdf.parse(dateStart)!!.time > sdf.parse(dateEnd)!!.time) {
+                throw Throwable("dateStart can not bigger than dateEnd")
             }
         } catch (e: Throwable) {
-            throw Throwable("dateStar or dateEnd format error please check for yyyy-MM-dd")
+            throw Throwable("dateStart or dateEnd format error please check for yyyy-MM-dd")
         }
         dateShowSize = it.getInt(R.styleable.DatePickerView_dpvDateSize, 5)
         if (dateShowSize % 2 == 0 || dateShowSize < 3) throw Throwable("dpvDateSize value must be  odd number and must be bigger than 2")
@@ -153,7 +151,7 @@ class DatePickerView @JvmOverloads constructor(
         datePaddingEnd = it.getDimension(R.styleable.DatePickerView_dpvDatePaddingEnd, 0f).toInt()
         val isEnableAlpha = it.getBoolean(R.styleable.DatePickerView_dpvDateEnableAlpha,true)
         it.recycle()
-        starDate = dateStar.split("-")
+        starDate = dateStart.split("-")
         positionDate = datePosition.split("-")
         endDate = dateEnd.split("-")
         positionDate.forEachIndexed { index, s ->
@@ -330,9 +328,6 @@ class DatePickerView @JvmOverloads constructor(
         }).toInt()
     }
 
-    //    val colorFilter = LightingColorFilter(0xffffff, 0x0000f0)
-//    var lg: LinearGradient? = null
-//    val color = Color.parseColor("#112233")
     override fun onDraw(canvas: Canvas?) {
         drawListener?.drawBelow(canvas, measuredWidth, measuredHeight, cellHeight)
         rectF.set(
@@ -352,15 +347,6 @@ class DatePickerView @JvmOverloads constructor(
         canvas?.drawLine(rectF.left, rectF.top, rectF.right, rectF.top, paint)
         canvas?.drawLine(rectF.left, rectF.bottom, rectF.right, rectF.bottom, paint)
         super.onDraw(canvas)
-
-//        paint.shader = if (lg == null) {
-//            lg = LinearGradient(0f, 0f, 0f, rectF.bottom, color, color, Shader.TileMode.CLAMP)
-//            lg
-//        } else lg
-////        paint.colorFilter = colorFilter
-//        paint.style = Paint.Style.FILL
-//
-//        canvas?.drawRect(0f, 0f, rectF.width(), rectF.top, paint)
         drawListener?.drawOver(canvas, measuredWidth, measuredHeight, cellHeight)
     }
 
