@@ -2,11 +2,12 @@
 DatePickerView [![](https://jitpack.io/v/limxing/DatePickerView.svg)](https://jitpack.io/#limxing/DatePickerView)
 
 
-<img src="./screen_record_date.gif" width="419" height="387"/>
+<img src="https://img-blog.csdnimg.cn/20210111162909836.gif" width="279" height="258"/> <img src="https://img-blog.csdnimg.cn/20210112172759805.gif" width="279" height="258"/>
+
 
 PickerView  inside。
 
-<img src="./screen_record_simple.gif" width="419" height="339"/>
+<img src="https://img-blog.csdnimg.cn/20210111163008630.gif" width="419" height="339"/>
 
 
 ## Usage
@@ -23,7 +24,7 @@ allprojects {
 App level build.gradle
 ```
 dependencies {
-    implementation 'com.github.limxing:DatePickerView:1.0.1'
+    implementation 'com.github.limxing:DatePickerView:1.0.2'
 }
 ```
 
