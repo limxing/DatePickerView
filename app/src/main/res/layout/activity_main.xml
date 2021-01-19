@@ -19,7 +19,6 @@
         app:dpvDateSize="7"
         app:dpvDateStart="1995-01-02"
         app:dpvDateTextColor="@color/black"
-        app:dpvDateTextSideColor="#66ff0000"
         app:dpvDateTextSize="24dp"
         app:dpvLineColor="#33000000"
         app:dpvLineWidth="1px"
