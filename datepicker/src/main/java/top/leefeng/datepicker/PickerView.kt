@@ -48,22 +48,8 @@ open class PickerView @JvmOverloads constructor(
             } else {
                 it.translationY = if (revert) it.height / 1f else -it.height / 1f
             }
-            (it as? PickerTextView)?.let {
-                if (it.pTextColor == it.pTextSelectColor) return@let
-                val currentTop = (measuredHeight - it.height) / 2 - resources.displayMetrics.density
-                val currentBottom = currentTop + it.height + 2 * resources.displayMetrics.density
-                if (it.top < currentTop && it.bottom > currentTop) {
-                    it.setPosition(true, currentTop - it.top, true)
-                } else if (it.top < currentBottom && it.bottom > currentBottom) {
-                    it.setPosition(false, currentBottom - it.top, true)
-
-                } else if (it.bottom < currentTop || it.top > currentBottom) {
-                    it.setPosition(true, 0f, false)
-                } else {
-                    it.setPosition(false, 0f, false)
-                }
-            }
             drawChild(canvas, it, drawingTime)
+            it.invalidate()
         }
     }
 

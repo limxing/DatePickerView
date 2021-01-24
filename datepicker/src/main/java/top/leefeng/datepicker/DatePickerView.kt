@@ -149,7 +149,7 @@ class DatePickerView @JvmOverloads constructor(
         datePaddingStart =
             it.getDimension(R.styleable.DatePickerView_dpvDatePaddingStart, 0f).toInt()
         datePaddingEnd = it.getDimension(R.styleable.DatePickerView_dpvDatePaddingEnd, 0f).toInt()
-        val isEnableAlpha = it.getBoolean(R.styleable.DatePickerView_dpvDateEnableAlpha,true)
+        val isEnableAlpha = it.getBoolean(R.styleable.DatePickerView_dpvDateEnableAlpha, true)
         it.recycle()
         starDate = dateStart.split("-")
         positionDate = datePosition.split("-")
@@ -371,6 +371,7 @@ class DatePickerView @JvmOverloads constructor(
                     LayoutParams(LayoutParams.MATCH_PARENT, cellHeight)
                 gravity = Gravity.CENTER// or Gravity.END
                 setTextSize(TypedValue.COMPLEX_UNIT_PX, txtsize)
+                setTextColor(textselectColor)
                 pTextSelectColor = textcolor
                 pTextColor = textselectColor
             }) {
