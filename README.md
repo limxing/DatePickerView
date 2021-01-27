@@ -24,7 +24,7 @@ allprojects {
 App level build.gradle
 ```
 dependencies {
-    implementation 'com.github.limxing:DatePickerView:1.0.3'
+    implementation 'com.github.limxing:DatePickerView:1.0.4'
 }
 ```
 
@@ -63,6 +63,11 @@ app:dpvDateEnableAlpha="true"           是否透明度向两侧渐变，默认t
 
 kotlin
 ```kotlin
+
+//获取选中的日期 yyyy-MM-dd
+datePickerView.dateString
+//获取选中的日期，时间戳
+datePickerView.dateLong
 
 //监听回调闭包
 datePickerView.listener = {
