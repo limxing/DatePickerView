@@ -52,6 +52,16 @@ class DatePickerView @JvmOverloads constructor(
 
     var drawListener: PickerView.DrawListener? = null
 
+    val dateString: String
+        get() {
+            return "${result[0]}-${result[1]}-${result[2]}"
+        }
+
+    val dateLong: Long?
+        get() {
+            return sdf.parse(dateString)?.time
+        }
+
     private val scroolListener = object : RecyclerView.OnScrollListener() {
         private var lastTag: Any = 0
         private var lastValue = ""
