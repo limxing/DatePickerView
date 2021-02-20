@@ -18,7 +18,7 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
 
         val list = listOf("北京市","天津市","上海市","河北省","山东省","河南省","辽宁省","江苏省","安徽省")
-        simplePicker.setData(list,3){
+        simplePicker.setData(list,list.indexOf("山东省")){
             simpleResult.text = list[it]
         }
 

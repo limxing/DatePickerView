@@ -77,7 +77,7 @@ class SimplePickerView @JvmOverloads constructor(
             listener = scrollBack
             adapter = SimplePickerAdapter(list, showSize, textColor, textSize, cellHeight)
             val p = if (position < 0) 0 else position
-            scrollToPosition(p + showSize / 2)
+            scrollToPosition(p)
             scrollBack?.invoke(p)
         }
     }
