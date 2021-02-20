@@ -56,6 +56,7 @@ app:dpvUnitScroll="true"                是否设置单位（年月日）与数�
 app:dpvUnitTextColor="@color/black"     设置单位（年月日）及选中的日期文本颜色，默认与dpvDateTextColor一致
 app:dpvUnitTextSize="20dp"              设置单位（年月日）文本大小，默认 18dp
 app:dpvDateEnableAlpha="true"           是否透明度向两侧渐变，默认true
+app:dpvPaddingTop="20dp"                设置顶部padding值 默认0
 ```
 
 

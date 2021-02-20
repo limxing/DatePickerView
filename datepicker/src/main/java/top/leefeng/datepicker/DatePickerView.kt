@@ -29,6 +29,7 @@ import java.util.*
 class DatePickerView @JvmOverloads constructor(
     context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
 ) : ViewGroup(context, attrs, defStyleAttr) {
+    private var padTop: Float
     private var lineStrokeWidth: Float
     private var positionDate: List<String>
     private var datePaddingEnd: Int
@@ -160,6 +161,7 @@ class DatePickerView @JvmOverloads constructor(
             it.getDimension(R.styleable.DatePickerView_dpvDatePaddingStart, 0f).toInt()
         datePaddingEnd = it.getDimension(R.styleable.DatePickerView_dpvDatePaddingEnd, 0f).toInt()
         val isEnableAlpha = it.getBoolean(R.styleable.DatePickerView_dpvDateEnableAlpha, true)
+        padTop = it.getDimension(R.styleable.DatePickerView_dpvPaddingTop,0f)
         it.recycle()
         starDate = dateStart.split("-")
         positionDate = datePosition.split("-")
@@ -339,6 +341,7 @@ class DatePickerView @JvmOverloads constructor(
     }
 
     override fun onDraw(canvas: Canvas?) {
+        canvas?.translate(0f,padTop)
         drawListener?.drawBelow(canvas, measuredWidth, measuredHeight, cellHeight)
         rectF.set(
             0f,

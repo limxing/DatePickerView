@@ -23,6 +23,7 @@ class SimplePickerView @JvmOverloads constructor(
     context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
 ) : PickerView(context, attrs, defStyleAttr) {
 
+    private var padTop: Float
     private var backColor: Int
     private var lineColor: Int
     private var lineStrokeWidth: Float
@@ -50,6 +51,7 @@ class SimplePickerView @JvmOverloads constructor(
             R.styleable.SimplePickerView_spvTextSize,
             18 * resources.displayMetrics.density
         )
+        padTop = it.getDimension(R.styleable.SimplePickerView_spvPaddingTop,0f)
         it.recycle()
 
         addOnScrollListener(object : OnScrollListener() {
@@ -94,6 +96,7 @@ class SimplePickerView @JvmOverloads constructor(
     private val paint = Paint()
     private val rectF = RectF()
     override fun onDraw(canvas: Canvas?) {
+        canvas?.translate(0f,padTop)
         drawListener?.drawBelow(canvas, measuredWidth, measuredHeight, cellHeight)
         rectF.set(
             0f,

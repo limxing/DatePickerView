@@ -18,6 +18,7 @@
         <attr name="dpvDatePaddingStart" format="dimension" />
         <attr name="dpvDatePaddingEnd" format="dimension" />
         <attr name="dpvDateEnableAlpha" format="boolean" />
+        <attr name="dpvPaddingTop" format="dimension" />
     </declare-styleable>
 
     <declare-styleable name="SimplePickerView">
@@ -27,5 +28,6 @@
         <attr name="spvBackgroundColor" format="color" />
         <attr name="spvLineWidth" format="dimension" />
         <attr name="spvLineColor" format="color" />
+        <attr name="spvPaddingTop" format="dimension"/>
     </declare-styleable>
 </resources>

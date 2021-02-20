@@ -28,6 +28,7 @@
         app:dpvUnitScroll="true"
         app:dpvUnitTextColor="@color/black"
         app:dpvUnitTextSize="20dp"
+        app:dpvPaddingTop="20dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
