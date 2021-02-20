@@ -70,14 +70,26 @@ class SimplePickerView @JvmOverloads constructor(
     /**
      * 设置数据
      */
-    fun setData(list: List<String>, position: Int, scrollBack: (Int) -> Unit) {
+    fun setData(list: List<String>, position: Int, scrollBack: ((Int) -> Unit)? = null) {
         post {
             listener = scrollBack
             adapter = SimplePickerAdapter(list, showSize, textColor, textSize, cellHeight)
-            scrollToPosition(position + showSize / 2)
-            scrollBack(position)
+            val p = if (position < 0) 0 else position
+            scrollToPosition(p + showSize / 2)
+            scrollBack?.invoke(p)
         }
     }
+
+    /**
+     * 获取当前选择数据
+     */
+    val currentValue: String
+        get() {
+            val po = (layoutManager as LinearLayoutManager).findFirstCompletelyVisibleItemPosition()
+            if (po == NO_POSITION)
+                return ""
+            return (adapter as SimplePickerAdapter).array[po]
+        }
 
     private val paint = Paint()
     private val rectF = RectF()
