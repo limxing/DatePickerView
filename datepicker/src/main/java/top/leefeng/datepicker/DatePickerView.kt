@@ -9,6 +9,7 @@ import android.util.AttributeSet
 import android.util.TypedValue
 import android.view.Gravity
 import android.view.MotionEvent
+import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.core.view.children
@@ -29,16 +30,19 @@ import java.util.*
 class DatePickerView @JvmOverloads constructor(
     context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
 ) : ViewGroup(context, attrs, defStyleAttr) {
+    private var textSideColor: Int
+    private var textColor: Int
+    private var textSize: Float
     private var padTop: Float
     private var lineStrokeWidth: Float
-    private var positionDate: List<String>
+    private var positionDate: List<String> = listOf("1970", "01", "01")
     private var datePaddingEnd: Int
     private var datePaddingStart: Int
     private var backColor: Int
     private var lineColor: Int
     private var unitMarginStart: Int
-    private var endDate: List<String>
-    private var starDate: List<String>
+    private var endDate: List<String> = listOf("1970", "01", "01")
+    private var starDate: List<String> = listOf("1970", "01", "01")
     private var oneRecyclerW: Int = 0
     private var unitScroll: Boolean = false
     private var cellHeight: Int = 0
@@ -108,11 +112,13 @@ class DatePickerView @JvmOverloads constructor(
             (recyclerView.findViewHolderForAdapterPosition(
                 (recyclerView.layoutManager as LinearLayoutManager)
                     .findFirstCompletelyVisibleItemPosition() + dateShowSize / 2
-            )?.itemView as? TextView)?.text.toString()
+            )?.itemView as? TextView)?.text?.toString() ?: "0"
         if (unitScroll) text = text.dropLast(1)
-        return if (text.length == 1) "0$text" else text
-
-
+        return when (text.length) {
+            0 -> "0"
+            1 -> "0$text"
+            else -> text
+        }
     }
 
 
@@ -123,10 +129,10 @@ class DatePickerView @JvmOverloads constructor(
         setWillNotDraw(false)
         val it = context.obtainStyledAttributes(attrs, R.styleable.DatePickerView)
         unitScroll = it.getBoolean(R.styleable.DatePickerView_dpvUnitScroll, false)
-        val textColor = it.getColor(R.styleable.DatePickerView_dpvDateTextColor, Color.BLACK)
-        val textSideColor = it.getColor(R.styleable.DatePickerView_dpvDateTextSideColor, textColor)
+        textColor = it.getColor(R.styleable.DatePickerView_dpvDateTextColor, Color.BLACK)
+        textSideColor = it.getColor(R.styleable.DatePickerView_dpvDateTextSideColor, textColor)
         val textUnitColor = it.getColor(R.styleable.DatePickerView_dpvUnitTextColor, textColor)
-        val textSize = it.getDimension(
+        textSize = it.getDimension(
             R.styleable.DatePickerView_dpvDateTextSize,
             20 * resources.displayMetrics.density
         )
@@ -161,7 +167,7 @@ class DatePickerView @JvmOverloads constructor(
             it.getDimension(R.styleable.DatePickerView_dpvDatePaddingStart, 0f).toInt()
         datePaddingEnd = it.getDimension(R.styleable.DatePickerView_dpvDatePaddingEnd, 0f).toInt()
         val isEnableAlpha = it.getBoolean(R.styleable.DatePickerView_dpvDateEnableAlpha, true)
-        padTop = it.getDimension(R.styleable.DatePickerView_dpvPaddingTop,0f)
+        padTop = it.getDimension(R.styleable.DatePickerView_dpvPaddingTop, 0f)
         it.recycle()
         starDate = dateStart.split("-")
         positionDate = datePosition.split("-")
@@ -183,18 +189,15 @@ class DatePickerView @JvmOverloads constructor(
                 })
         }
         post {
-            children.filter { it is RecyclerView }.forEachIndexed { index, view ->
-                (view as RecyclerView).apply {
-                    adapter = DateAdapter(
-                        cellHeight,
-                        if (unitScroll) units[index] else "",
-                        dateShowSize,
-                        textSize,
-                        textColor,
-                        textSideColor
-                    )
-                    scrollToPosition(this)
-                }
+            children.forEach {
+                (it as? RecyclerView)?.adapter = DateAdapter(
+                    cellHeight,
+                    if (unitScroll) units[it.tag as Int] else "",
+                    dateShowSize,
+                    textSize,
+                    textColor,
+                    textSideColor
+                )
             }
             listener?.invoke(result)
         }
@@ -203,33 +206,34 @@ class DatePickerView @JvmOverloads constructor(
 
     private fun scrollToPosition(recyclerView: RecyclerView) {
         val adapter = recyclerView.adapter as DateAdapter
-        recyclerView.scrollToPosition(
-            when (recyclerView.tag) {
-                0 -> {
-                    adapter.setData(
-                        starDate[0].toInt(),
-                        endDate[0].toInt()
-                    )
-                    positionDate[0].toInt() - starDate[0].toInt()
-                }
-                1 -> {
-                    positionDate[1].toInt() - caculateMonth(
-                        adapter,
-                        positionDate[0]
-                    )
-                }
-                else -> {
-                    positionDate[2].toInt() - caculateDay(
-                        adapter,
-                        positionDate
-                    )
-                }
+        val index = when (recyclerView.tag) {
+            0 -> {
+                adapter.setData(
+                    starDate[0].toInt(),
+                    endDate[0].toInt()
+                )
+                positionDate[0].toInt() - starDate[0].toInt()
             }
-        )
+            1 -> {
+                positionDate[1].toInt() - caculateMonth(
+                    adapter,
+                    positionDate[0]
+                )
+            }
+            else -> {
+                val index = positionDate[2].toInt() - caculateDay(
+                    adapter,
+                    positionDate
+                )
+                "滑动：$index startData:${starDate}  endData:${endDate}  position:$positionDate".p
+                index
+            }
+        }
+
+        recyclerView.scrollToPosition(index)
         recyclerView.postDelayed({
             result[recyclerView.tag as Int] = getCurrentText(recyclerView).toInt()
         }, 500)
-
     }
 
     /**
@@ -243,15 +247,39 @@ class DatePickerView @JvmOverloads constructor(
             "04", "06", "09", "11" -> 30
             else -> 31
         }
-        return if (starDate[0] == year) {
-            adapter.setData(starDate[2].toInt(), days)
-            starDate[2].toInt()
-        } else if (endDate[0] == year) {
-            adapter.setData(1, endDate[2].toInt())
-            1
-        } else {
-            adapter.setData(1, days)
-            1
+        return when {
+            starDate[0] == endDate[0] -> {
+                when {
+                    starDate[1] == endDate[1] -> { //其实日期同年同月
+                        adapter.setData(starDate[2].toInt(), endDate[2].toInt())
+                        starDate[2].toInt()
+                    }
+                    starDate[1] == month -> {
+                        adapter.setData(starDate[2].toInt(), days)
+                        starDate[2].toInt()
+                    }
+                    endDate[1] == month -> {
+                        adapter.setData(1, endDate[2].toInt())
+                        1
+                    }
+                    else -> {
+                        adapter.setData(1, days)
+                        1
+                    }
+                }
+            }
+            starDate[0] == year && starDate[1] == month -> {
+                adapter.setData(starDate[2].toInt(), days)
+                starDate[2].toInt()
+            }
+            endDate[0] == year && endDate[1] == month -> {
+                adapter.setData(1, endDate[2].toInt())
+                1
+            }
+            else -> {
+                adapter.setData(1, days)
+                1
+            }
         }
 
     }
@@ -260,15 +288,24 @@ class DatePickerView @JvmOverloads constructor(
      * 计算月份
      */
     private fun caculateMonth(adapter: DateAdapter, year: String): Int {
-        return if (year == starDate[0]) {
-            adapter.setData(starDate[1].toInt(), 12)
-            starDate[1].toInt()
-        } else if (year == endDate[0]) {
-            adapter.setData(1, endDate[1].toInt())
-            1
-        } else {
-            adapter.setData(1, 12)
-            1
+
+        return when {
+            starDate[0] == endDate[0] -> {//起始日期同年
+                adapter.setData(starDate[1].toInt(), endDate[1].toInt())
+                starDate[1].toInt()
+            }
+            year == starDate[0] -> {//起始日期不同年，当前年与开始日期同年
+                adapter.setData(starDate[1].toInt(), 12)
+                starDate[1].toInt()
+            }
+            year == endDate[0] -> {//起始日期不同年，当前年与结束日期同年
+                adapter.setData(1, endDate[1].toInt())
+                1
+            }
+            else -> {
+                adapter.setData(1, 12)
+                1
+            }
         }
     }
 
@@ -300,6 +337,10 @@ class DatePickerView @JvmOverloads constructor(
             children.filter { it is RecyclerView }.forEach {
                 scrollToPosition(it as RecyclerView)
             }
+            result[0] = positionDate[0].toInt()
+            result[1] = positionDate[1].toInt()
+            result[2] = positionDate[2].toInt()
+            listener?.invoke(result)
         }
     }
 
@@ -341,7 +382,7 @@ class DatePickerView @JvmOverloads constructor(
     }
 
     override fun onDraw(canvas: Canvas?) {
-        canvas?.translate(0f,padTop)
+        canvas?.translate(0f, padTop)
         drawListener?.drawBelow(canvas, measuredWidth, measuredHeight, cellHeight)
         rectF.set(
             0f,
@@ -425,5 +466,30 @@ class DatePickerView @JvmOverloads constructor(
             MotionEvent.ACTION_POINTER_DOWN -> return false
         }
         return super.dispatchTouchEvent(ev)
+    }
+
+    /**
+     * 初始化不可见时，cell的高度没有初始化
+     */
+    override fun setVisibility(visibility: Int) {
+        val cellIsZero = cellHeight == 0
+        super.setVisibility(visibility)
+        post {
+            if (visibility == View.VISIBLE && cellIsZero) {
+                children.forEach {
+                    if (it is RecyclerView) {
+                        it.adapter = DateAdapter(
+                            cellHeight,
+                            if (unitScroll) units[it.tag as Int] else "",
+                            dateShowSize,
+                            textSize,
+                            textColor,
+                            textSideColor
+                        )
+                        scrollToPosition(it)
+                    }
+                }
+            }
+        }
     }
 }
