@@ -190,14 +190,17 @@ class DatePickerView @JvmOverloads constructor(
         }
         post {
             children.forEach {
-                (it as? RecyclerView)?.adapter = DateAdapter(
-                    cellHeight,
-                    if (unitScroll) units[it.tag as Int] else "",
-                    dateShowSize,
-                    textSize,
-                    textColor,
-                    textSideColor
-                )
+                (it as? RecyclerView)?.let {
+                    it.adapter = DateAdapter(
+                        cellHeight,
+                        if (unitScroll) units[it.tag as Int] else "",
+                        dateShowSize,
+                        textSize,
+                        textColor,
+                        textSideColor
+                    )
+                    scrollToPosition(it)
+                }
             }
             listener?.invoke(result)
         }
@@ -221,16 +224,15 @@ class DatePickerView @JvmOverloads constructor(
                 )
             }
             else -> {
-                val index = positionDate[2].toInt() - caculateDay(
+                positionDate[2].toInt() - caculateDay(
                     adapter,
                     positionDate
                 )
-                "滑动：$index startData:${starDate}  endData:${endDate}  position:$positionDate".p
-                index
             }
         }
 
-        recyclerView.scrollToPosition(index)
+//        "${recyclerView.tag} 滑动：$index startData:${starDate}  endData:${endDate}  position:$positionDate".p
+        (recyclerView.layoutManager as LinearLayoutManager).scrollToPositionWithOffset(index,0)
         recyclerView.postDelayed({
             result[recyclerView.tag as Int] = getCurrentText(recyclerView).toInt()
         }, 500)
