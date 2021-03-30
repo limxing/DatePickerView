@@ -9,9 +9,8 @@ import android.util.Log
  * Copyright www.putaoabc.com
  *
  */
-val String.p: Any
+val String.p: Unit
     get() {
         if (BuildConfig.DEBUG)
             Log.i("DataPicker", this)
-        return this
     }

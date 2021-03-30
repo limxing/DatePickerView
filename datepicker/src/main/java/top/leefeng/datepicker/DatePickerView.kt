@@ -9,7 +9,6 @@ import android.util.AttributeSet
 import android.util.TypedValue
 import android.view.Gravity
 import android.view.MotionEvent
-import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.core.view.children
@@ -190,7 +189,7 @@ class DatePickerView @JvmOverloads constructor(
         }
         post {
             children.forEach {
-                (it as? RecyclerView)?.let {
+                if (it is RecyclerView) {
                     it.adapter = DateAdapter(
                         cellHeight,
                         if (unitScroll) units[it.tag as Int] else "",
@@ -202,9 +201,9 @@ class DatePickerView @JvmOverloads constructor(
                     scrollToPosition(it)
                 }
             }
-            listener?.invoke(result)
-        }
 
+        }
+        listener?.invoke(result)
     }
 
     private fun scrollToPosition(recyclerView: RecyclerView) {
@@ -231,8 +230,7 @@ class DatePickerView @JvmOverloads constructor(
             }
         }
 
-//        "${recyclerView.tag} 滑动：$index startData:${starDate}  endData:${endDate}  position:$positionDate".p
-        (recyclerView.layoutManager as LinearLayoutManager).scrollToPositionWithOffset(index,0)
+        (recyclerView.layoutManager as LinearLayoutManager).scrollToPositionWithOffset(index, 0)
         recyclerView.postDelayed({
             result[recyclerView.tag as Int] = getCurrentText(recyclerView).toInt()
         }, 500)
@@ -372,8 +370,19 @@ class DatePickerView @JvmOverloads constructor(
         super.onMeasure(widthMeasureSpec, heightMeasureSpec)
         sizeWidth = MeasureSpec.getSize(widthMeasureSpec)
         sizeHeight = MeasureSpec.getSize(heightMeasureSpec)
+
+        val cellheight = sizeHeight / dateShowSize
+        if (cellheight != cellHeight) {
+            children.forEach {
+                if (it is RecyclerView) {
+                    (it.adapter as? DateAdapter)?.cellHeight = cellheight
+                }
+            }
+        }
+        cellHeight = cellheight
+        sizeHeight = cellheight * dateShowSize
+        setMeasuredDimension(sizeWidth, sizeHeight)
         measureChildren(widthMeasureSpec, heightMeasureSpec)
-        cellHeight = sizeHeight / dateShowSize
 
         //如果单位不跟随滚动。计算单位的宽高
         oneRecyclerW = (if (unitScroll) {
@@ -410,7 +419,7 @@ class DatePickerView @JvmOverloads constructor(
      * type: 0 year 1 month 2 day
      */
     private class DateAdapter(
-        val cellHeight: Int,
+        var cellHeight: Int,
         val unit: String = "",
         val dateShowSize: Int,
         val txtsize: Float,
@@ -470,28 +479,4 @@ class DatePickerView @JvmOverloads constructor(
         return super.dispatchTouchEvent(ev)
     }
 
-    /**
-     * 初始化不可见时，cell的高度没有初始化
-     */
-    override fun setVisibility(visibility: Int) {
-        val cellIsZero = cellHeight == 0
-        super.setVisibility(visibility)
-        post {
-            if (visibility == View.VISIBLE && cellIsZero) {
-                children.forEach {
-                    if (it is RecyclerView) {
-                        it.adapter = DateAdapter(
-                            cellHeight,
-                            if (unitScroll) units[it.tag as Int] else "",
-                            dateShowSize,
-                            textSize,
-                            textColor,
-                            textSideColor
-                        )
-                        scrollToPosition(it)
-                    }
-                }
-            }
-        }
-    }
 }
