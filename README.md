@@ -24,7 +24,7 @@ allprojects {
 App level build.gradle
 ```
 dependencies {
-    implementation 'com.github.limxing:DatePickerView:1.0.5'
+    implementation 'com.github.limxing:DatePickerView:1.0.8'
 }
 ```
 
@@ -110,12 +110,6 @@ java
 ```
 
 ### 实现原理
-
-> Android发展的这么多年，很多Android开发者包括我面对做一个与IOS滚轮选择器UI时，各种搜索，
-不难发现很多前辈为此付出了不少努力。有反编译别人apk的，有继承View自定义的，简单点的使用ListView
-或Recyclerview在其上画一个渐变蒙层。结果就是要么有BUG的，要么与UI不符，还有的滑动时错位的。
-> 我也是一个比较懒的人。不想全部自定义View，毕竟列表这种事情,系统SDK控件Recyclerview已经做的不是很好了吗！
-> 因此，我就在RecyclerView上下手找到突破口。
 
 首先我们分析一下：
 

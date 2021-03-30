@@ -35,14 +35,14 @@ class DatePickerView @JvmOverloads constructor(
     private var textSize: Float
     private var padTop: Float
     private var lineStrokeWidth: Float
-    private var positionDate: List<String> = listOf("1970", "01", "01")
+    private var positionDate: List<String>
     private var datePaddingEnd: Int
     private var datePaddingStart: Int
     private var backColor: Int
     private var lineColor: Int
     private var unitMarginStart: Int
-    private var endDate: List<String> = listOf("1970", "01", "01")
-    private var starDate: List<String> = listOf("1970", "01", "01")
+    private var endDate: List<String>
+    private var starDate: List<String>
     private var oneRecyclerW: Int = 0
     private var unitScroll: Boolean = false
     private var cellHeight: Int = 0
