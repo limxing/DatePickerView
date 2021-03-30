@@ -24,7 +24,7 @@ allprojects {
 App level build.gradle
 ```
 dependencies {
-    implementation 'com.github.limxing:DatePickerView:1.0.8'
+    implementation 'com.github.limxing:DatePickerView:1.0.9'
 }
 ```
 
@@ -167,6 +167,8 @@ DatePickerView继承自ViewGroup，是一个常规的自定义View，有兴趣�
 当然你还可以使用PickerView进行其他选择器的开发，例如时间选择器、省市联动选择器。
 
 最后，如遇到bug请及时issue。希望能够对你有帮助。
+
+感谢 [caiyoufei](https://github.com/caiyoufei) bug贡献
 
 ## License
 DatePickerView and PickerView is available under the MIT license.
