@@ -51,7 +51,7 @@ class SimplePickerView @JvmOverloads constructor(
             R.styleable.SimplePickerView_spvTextSize,
             18 * resources.displayMetrics.density
         )
-        padTop = it.getDimension(R.styleable.SimplePickerView_spvPaddingTop,0f)
+        padTop = it.getDimension(R.styleable.SimplePickerView_spvPaddingTop, 0f)
         it.recycle()
 
         addOnScrollListener(object : OnScrollListener() {
@@ -65,8 +65,10 @@ class SimplePickerView @JvmOverloads constructor(
     override fun onMeasure(widthSpec: Int, heightSpec: Int) {
         super.onMeasure(widthSpec, heightSpec)
         val sizeHeight = MeasureSpec.getSize(heightSpec)
-        measureChildren(widthSpec, heightSpec)
         cellHeight = sizeHeight / showSize
+        setMeasuredDimension(MeasureSpec.getSize(widthSpec), cellHeight * showSize)
+        (adapter as? SimplePickerAdapter)?.itemHeight = cellHeight
+        measureChildren(widthSpec, heightSpec)
     }
 
     /**
@@ -96,7 +98,7 @@ class SimplePickerView @JvmOverloads constructor(
     private val paint = Paint()
     private val rectF = RectF()
     override fun onDraw(canvas: Canvas?) {
-        canvas?.translate(0f,padTop)
+        canvas?.translate(0f, padTop)
         drawListener?.drawBelow(canvas, measuredWidth, measuredHeight, cellHeight)
         rectF.set(
             0f,
@@ -126,7 +128,7 @@ class SimplePickerView @JvmOverloads constructor(
         val showSize: Int,
         val textcolor: Int,
         val textsize: Float,
-        val itemHeight: Int
+        var itemHeight: Int
     ) :
         Adapter<ViewHolder>() {
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
