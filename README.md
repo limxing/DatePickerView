@@ -24,7 +24,7 @@ allprojects {
 App level build.gradle
 ```
 dependencies {
-    implementation 'com.github.limxing:DatePickerView:1.0.9'
+    implementation 'com.github.limxing:DatePickerView:1.1.0'
 }
 ```
 
