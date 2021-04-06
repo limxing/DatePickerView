@@ -247,40 +247,46 @@ class DatePickerView @JvmOverloads constructor(
             "04", "06", "09", "11" -> 30
             else -> 31
         }
-        return when {
+        var dayFrom = 1
+        val adapterResult = when {
             starDate[0] == endDate[0] -> {
                 when {
                     starDate[1] == endDate[1] -> { //其实日期同年同月
-                        adapter.setData(starDate[2].toInt(), endDate[2].toInt())
-                        starDate[2].toInt()
+                        dayFrom = starDate[2].toInt()
+                        adapter.setData(dayFrom, endDate[2].toInt())
                     }
                     starDate[1] == month -> {
-                        adapter.setData(starDate[2].toInt(), days)
-                        starDate[2].toInt()
+                        dayFrom = starDate[2].toInt()
+                        adapter.setData(dayFrom, days)
                     }
                     endDate[1] == month -> {
                         adapter.setData(1, endDate[2].toInt())
-                        1
                     }
                     else -> {
                         adapter.setData(1, days)
-                        1
                     }
                 }
             }
             starDate[0] == year && starDate[1] == month -> {
-                adapter.setData(starDate[2].toInt(), days)
-                starDate[2].toInt()
+                dayFrom = starDate[2].toInt()
+                adapter.setData(dayFrom, days)
             }
             endDate[0] == year && endDate[1] == month -> {
                 adapter.setData(1, endDate[2].toInt())
-                1
             }
             else -> {
                 adapter.setData(1, days)
-                1
             }
         }
+        if (adapterResult) {
+            findViewWithTag<RecyclerView>(2).let {
+                it.post {
+                    result[2] = getCurrentText(it).toInt()
+                    listener?.invoke(result)
+                }
+            }
+        }
+        return dayFrom
 
     }
 
