@@ -328,15 +328,16 @@ class DatePickerView @JvmOverloads constructor(
             if (startArray.size != 3) throw Throwable("dateStart format mast be yyyy-MM-dd")
             val endArray = dateEnd.split("-")
             if (endArray.size != 3) throw Throwable("dateEnd format mast be yyyy-MM-dd")
-            val posArray = datePosition.split("-")
+            var posArray = datePosition.split("-")
             if (posArray.size != 3) throw Throwable("datePosition format mast be yyyy-MM-dd")
 
             val startTime = sdf.parse(dateStart)!!.time
             val endTime = sdf.parse(dateEnd)!!.time
-            val posTime = sdf.parse(datePosition)!!.time
+            var posTime = sdf.parse(datePosition)!!.time
             if (endTime < startTime) throw Throwable("dateEnd mast bu bigger than dateStart")
-            if (posTime < startTime || posTime > endTime) throw Throwable("datePosition must between dateStart and dateEnd")
-
+//            if (posTime < startTime || posTime > endTime) throw Throwable("datePosition must between dateStart and dateEnd")
+            if (posTime < startTime) posArray = startArray
+            if (posTime > endTime) posArray = endArray
             endDate = endArray
             starDate = startArray
             positionDate = posArray
